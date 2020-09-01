@@ -381,38 +381,34 @@ def get_distance(request):
 			return JsonResponse({"distance1":str(distance1)},safe=False)
 	except:
 		return JsonResponse({"message":"not defind"})
-
+import json
 @csrf_exempt
 def post_boostangel(request):
 	if request.method == 'POST':
-		user = UserDetail.objects.get(id=request.GET.get('id'))
-		boostanglebody = request.GET.get('boostanglebody')
-		body = request.GET.get('body')
-		degree = request.GET.get('degree')
-		degree_type = request.GET.get('degree_type')
+		data1 = json.loads(request.body)
+		user = UserDetail.objects.get(id=int(data1['id']))
 		if user:
-			response = BoostAngle.objects.create(
-								name = user,boostanglebody = boostanglebody, body = body,
-								degree = degree,degree_type = degree_type)
-
+			for data2 in data1['data']:
+				response = BoostAngle.objects.create(
+									name = user,boostanglebody = data2['boostanglebody'], body = data2['body'],
+									degree = data2['degree'],degree_type = data2['degree_type'])
+				response.save()
 			return JsonResponse({"message":"created", "status": True})
 		else:
 			return JsonResponse({"message":"Not created", "status": False})
-	
+
 	if request.method == 'GET':
 		task_obj = BoostAngle.objects.all()
 		data = list(task_obj.values())
 		return JsonResponse(data, safe=False)
 
 	if request.method == 'PUT':
-		user = BoostAngle.objects.get(id=request.GET.get('id'))
-		boostanglebody = request.GET.get('boostanglebody')
-		body = request.GET.get('body')
-		degree = request.GET.get('degree')
-		degree_type = request.GET.get('degree_type')
+		data = json.loads(request.body)
+		user = BoostAngle.objects.get(id=int(data['id']))
 		if user:
-			response = BoostAngle.objects.update(boostanglebody = boostanglebody, body = body,
-								degree = degree,degree_type = degree_type)
+			for data2 in data['data']:	
+				response = BoostAngle.objects.update(boostanglebody = data2['boostanglebody'], body = data2['body'],
+									degree = data2['degree'],degree_type = data2['degree_type'])
 
 			return JsonResponse({"message":"created", "status": True})
 		else:
