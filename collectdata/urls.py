@@ -11,6 +11,7 @@ urlpatterns = [
     path("logout/", views.logout_request, name="logout"),
     path("distance/", views.get_distance, name="distance"),
     path("boostangel_post", views.post_boostangel, name="boostangel"),
+    path("ir_support", views.Ir_support, name="Ir_support"),
 
 
     

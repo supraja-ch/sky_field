@@ -11,8 +11,9 @@ from django.http import JsonResponse
 from .forms import NewUserForm
 from datetime import datetime, date
 import datetime as dt
-from skyfield.api import utc
+import json
 
+from skyfield.api import utc
 from skyfield.api import load, Topos
 from skyfield.data import mpc
 from skyfield.constants import GM_SUN_Pitjeva_2005_km3_s2 as GM_SUN
@@ -381,7 +382,7 @@ def get_distance(request):
 			return JsonResponse({"distance1":str(distance1)},safe=False)
 	except:
 		return JsonResponse({"message":"not defind"})
-import json
+
 @csrf_exempt
 def post_boostangel(request):
 	if request.method == 'POST':
@@ -400,7 +401,7 @@ def post_boostangel(request):
 	if request.method == 'GET':
 		task_obj = BoostAngle.objects.all()
 		data = list(task_obj.values())
-		return JsonResponse(data, safe=False)
+		return JsonResponse(data, safe=True)
 
 	if request.method == 'PUT':
 		data = json.loads(request.body)
@@ -410,6 +411,41 @@ def post_boostangel(request):
 				response = BoostAngle.objects.update(boostanglebody = data2['boostanglebody'], body = data2['body'],
 									degree = data2['degree'],degree_type = data2['degree_type'])
 
+			return JsonResponse({"message":"created", "status": True})
+		else:
+			return JsonResponse({"message":"Not created", "status": False})
+		
+@csrf_exempt
+def Ir_support(request):
+	if request.method == 'POST':
+		data1 = json.loads(request.body)
+		user = UserDetail.objects.get(id=int(data1['id']))
+		if user:
+			for data2 in data1['data']:
+				response = Irsupport.objects.create(
+									name = user,body = data2['body'], sym = data2['sym'],
+									degree = data2['degree'],body1 = data2['body'],
+									energy = data2['energy'],degree_type = data2['degree_type'])
+				response.save()
+			return JsonResponse({"message":"created", "status": True})
+		else:
+			return JsonResponse({"message":"Not created", "status": False})
+
+	if request.method == 'GET':
+		task_obj = Irsupport.objects.all()
+		data = list(task_obj.values())
+		return JsonResponse(data, safe=False)
+	
+	if request.method == 'PUT':
+		data1 = json.loads(request.body)
+		user = Irsupport.objects.get(id=int(data1['id']))
+		if user:
+			for data2 in data1['data']:
+				response = Irsupport.objects.create(
+									body = data2['body'], sym = data2['sym'],
+									degree = data2['degree'],body1 = data2['body'],
+									energy = data2['energy'],degree_type = data2['degree_type'])
+				response.save()
 			return JsonResponse({"message":"created", "status": True})
 		else:
 			return JsonResponse({"message":"Not created", "status": False})
