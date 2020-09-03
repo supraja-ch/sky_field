@@ -7,6 +7,7 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect,HttpResponse,get_object_or_404
 from django.contrib import messages
 from django.http import JsonResponse
+from django.core.exceptions import ObjectDoesNotExist
 
 from .forms import NewUserForm
 from datetime import datetime, date
@@ -387,16 +388,20 @@ def get_distance(request):
 def post_boostangel(request):
 	if request.method == 'POST':
 		data1 = json.loads(request.body)
-		user = UserDetail.objects.get(id=int(data1['id']))
-		if user:
-			for data2 in data1['data']:
-				response = BoostAngle.objects.create(
-									name = user,boostanglebody = data2['boostanglebody'], body = data2['body'],
-									degree = data2['degree'],degree_type = data2['degree_type'])
-				response.save()
-			return JsonResponse({"message":"created", "status": True})
-		else:
-			return JsonResponse({"message":"Not created", "status": False})
+		try:
+			user = UserDetail.objects.get(id=int(data1['id']))
+			if user:
+				for data2 in data1['data']:
+					response = BoostAngle.objects.create(
+										name = user,boostanglebody = data2['boostanglebody'], body = data2['body'],
+										degree = data2['degree'],degree_type = data2['degree_type'])
+					response.save()
+				return JsonResponse({"message":"created", "status": True})
+			else:
+				return JsonResponse({"message":"Not created", "status": False})
+		except ObjectDoesNotExist:
+			return JsonResponse({"message":"User Not matching","status":False})
+
 
 	if request.method == 'GET':
 		task_obj = BoostAngle.objects.all()
@@ -405,31 +410,37 @@ def post_boostangel(request):
 
 	if request.method == 'PUT':
 		data = json.loads(request.body)
-		user = BoostAngle.objects.get(id=int(data['id']))
-		if user:
-			for data2 in data['data']:	
-				response = BoostAngle.objects.update(boostanglebody = data2['boostanglebody'], body = data2['body'],
-									degree = data2['degree'],degree_type = data2['degree_type'])
+		try:
+			user = BoostAngle.objects.get(id=int(data['id']))
+			if user:
+				for data2 in data['data']:	
+					response = BoostAngle.objects.update(boostanglebody = data2['boostanglebody'], body = data2['body'],
+										degree = data2['degree'],degree_type = data2['degree_type'])
 
-			return JsonResponse({"message":"created", "status": True})
-		else:
-			return JsonResponse({"message":"Not created", "status": False})
-		
+				return JsonResponse({"message":"created", "status": True})
+			else:
+				return JsonResponse({"message":"Not created", "status": False})
+		except ObjectDoesNotExist:
+			return JsonResponse({"message":"User Not matching","status":False})
+
 @csrf_exempt
 def Ir_support(request):
 	if request.method == 'POST':
 		data1 = json.loads(request.body)
-		user = UserDetail.objects.get(id=int(data1['id']))
-		if user:
-			for data2 in data1['data']:
-				response = Irsupport.objects.create(
-									name = user,body = data2['body'], sym = data2['sym'],
-									degree = data2['degree'],body1 = data2['body'],
-									energy = data2['energy'],degree_type = data2['degree_type'])
-				response.save()
-			return JsonResponse({"message":"created", "status": True})
-		else:
-			return JsonResponse({"message":"Not created", "status": False})
+		try:
+			user = UserDetail.objects.get(id=int(data1['id']))
+			if user:
+				for data2 in data1['data']:
+					response = Irsupport.objects.create(
+										name = user,body = data2['body'], sym = data2['sym'],
+										degree = data2['degree'],body1 = data2['body1'],
+										energy = data2['energy'],degree_type = data2['degree_type'])
+					response.save()
+				return JsonResponse({"message":"created", "status": True})
+			else:
+				return JsonResponse({"message":"Not created", "status": False})
+		except ObjectDoesNotExist:
+			return JsonResponse({"message":"User Not matching","status":False})
 
 	if request.method == 'GET':
 		task_obj = Irsupport.objects.all()
@@ -438,14 +449,469 @@ def Ir_support(request):
 	
 	if request.method == 'PUT':
 		data1 = json.loads(request.body)
-		user = Irsupport.objects.get(id=int(data1['id']))
-		if user:
-			for data2 in data1['data']:
-				response = Irsupport.objects.create(
-									body = data2['body'], sym = data2['sym'],
-									degree = data2['degree'],body1 = data2['body'],
-									energy = data2['energy'],degree_type = data2['degree_type'])
-				response.save()
-			return JsonResponse({"message":"created", "status": True})
-		else:
-			return JsonResponse({"message":"Not created", "status": False})
+		try:
+			user = Irsupport.objects.get(id=int(data1['id']))
+			if user:
+				for data2 in data1['data']:
+					response = Irsupport.objects.create(
+										body = data2['body'], sym = data2['sym'],
+										degree = data2['degree'],body1 = data2['body'],
+										energy = data2['energy'],degree_type = data2['degree_type'])
+					response.save()
+				return JsonResponse({"message":"created", "status": True})
+			else:
+				return JsonResponse({"message":"Not created", "status": False})
+		except ObjectDoesNotExist:
+			return JsonResponse({"message":"User Not matching","status":False})
+
+@csrf_exempt
+def boost_angke_details(request):
+	if request.method == 'POST':
+		data1 = json.loads(request.body)
+		try:
+			user = UserDetail.objects.get(id=int(data1['id']))
+			if user:
+				for data2 in data1['data']:
+					response = BoostAngleDetail.objects.create(
+										name = user,boostanglebody = data2['boostanglebody'],
+										body = data2['body'], boost_symbol = data2['boost_symbol'],
+										degree = data2['degree'],body1 = data2['body1'],
+										energy = data2['energy'],degree_type = data2['degree_type'])
+					response.save()
+				return JsonResponse({"message":"created", "status": True})
+			else:
+				return JsonResponse({"message":"Not created", "status": False})
+		except ObjectDoesNotExist:
+			return JsonResponse({"message":"User Not matching","status":False})
+
+	if request.method == 'GET':
+		task_obj = BoostAngleDetail.objects.all()
+		data = list(task_obj.values())
+		return JsonResponse(data, safe=False)
+	
+	if request.method == 'PUT':
+		data1 = json.loads(request.body)
+		try:
+			user = BoostAngleDetail.objects.get(id=int(data1['id']))
+			if user:
+				for data2 in data1['data']:
+					response = BoostAngleDetail.objects.create(
+										boostanglebody = data2['boostanglebody'],
+										body = data2['body'], boost_symbol = data2['boost_symbol'],
+										degree = data2['degree'],body1 = data2['body'],
+										energy = data2['energy'],degree_type = data2['degree_type'])
+					response.save()
+				return JsonResponse({"message":"created", "status": True})
+			else:
+				return JsonResponse({"message":"Not created", "status": False})
+		except ObjectDoesNotExist:
+			return JsonResponse({"message":"User Not matching","status":False})
+
+@csrf_exempt
+def Conditions(request):
+	if request.method == 'POST':
+		data1 = json.loads(request.body)
+		try:
+			user = UserDetail.objects.get(id=int(data1['id']))
+			if user:
+				for data2 in data1['data']:
+					response = Condition.objects.create(
+										name = user,conditionbody = data2['conditionbody'],
+										first_condition = data2['first_condition'],
+										degree = data2['degree'],
+										energy = data2['energy'],degree_type = data2['degree_type'])
+				return JsonResponse({"message":"created", "status": True})
+			else:
+				return JsonResponse({"message":"Not created", "status": False})
+		except ObjectDoesNotExist:
+			return JsonResponse({"message":"User Not matching","status":False})
+
+	if request.method == 'GET':
+		task_obj = Condition.objects.all()
+		data = list(task_obj.values())
+		return JsonResponse(data, safe=False)
+	
+	if request.method == 'PUT':
+		data1 = json.loads(request.body)
+		try:
+			user = Condition.objects.get(id=int(data1['id']))
+			if user:
+				for data2 in data1['data']:
+					response = Condition.objects.create(
+										conditionbody = data2['conditionbody'],
+										first_condition = data2['first_condition'],
+										degree = data2['degree'],
+										energy = data2['energy'],degree_type = data2['degree_type'])
+				return JsonResponse({"message":"created", "status": True})
+			else:
+				return JsonResponse({"message":"Not created", "status": False})
+		except ObjectDoesNotExist:
+			return JsonResponse({"message":"User Not matching","status":False})
+
+@csrf_exempt
+def bracketed(request):
+	if request.method == 'POST':
+		data1 = json.loads(request.body)
+		try:
+			user = UserDetail.objects.get(id=int(data1['id']))
+			if user:
+				for data2 in data1['data']:
+					response = Bracketed.objects.create(
+										name = user,bracket = data2['bracket'],
+										body = data2['body'],
+										degree_type = data2['degree_type'])
+				return JsonResponse({"message":"created", "status": True})
+			else:
+				return JsonResponse({"message":"Not created", "status": False})
+		except ObjectDoesNotExist:
+			return JsonResponse({"message":"User Not matching","status":False})
+
+	if request.method == 'GET':
+		task_obj = Bracketed.objects.all()
+		data = list(task_obj.values())
+		return JsonResponse(data, safe=False)
+	
+	if request.method == 'PUT':
+		data1 = json.loads(request.body)
+		try:
+			user = Bracketed.objects.get(id=int(data1['id']))
+			if user:
+				for data2 in data1['data']:
+					response = Bracketed.objects.create(
+										bracket = data2['bracket'],
+										body = data2['body'],
+										degree_type = data2['degree_type'])
+				return JsonResponse({"message":"created", "status": True})
+			else:
+				return JsonResponse({"message":"Not created", "status": False})
+		except ObjectDoesNotExist:
+			return JsonResponse({"message":"User Not matching","status":False})
+
+@csrf_exempt
+def gasgiant(request):
+	if request.method == 'POST':
+		data1 = json.loads(request.body)
+		try:
+			user = UserDetail.objects.get(id=int(data1['id']))
+			if user:
+				for data2 in data1['data']:
+					response = Gasgiant.objects.create(
+										name = user,gas = data2['gas'],
+										body = data2['body'], symbol = data2['symbol'],
+										degree = data2['degree'],
+										energy = data2['energy'],degree_type = data2['degree_type'])
+				return JsonResponse({"message":"created", "status": True})
+			else:
+				return JsonResponse({"message":"Not created", "status": False})
+		except ObjectDoesNotExist:
+			return JsonResponse({"message":"User Not matching","status":False})
+
+	if request.method == 'GET':
+		task_obj = Gasgiant.objects.all()
+		data = list(task_obj.values())
+		return JsonResponse(data, safe=False)
+	
+	if request.method == 'PUT':
+		data1 = json.loads(request.body)
+		try:
+			user = Gasgiant.objects.get(id=int(data1['id']))
+			if user:
+				for data2 in data1['data']:
+					response = Gasgiant.objects.create(
+										gas = data2['gas'],
+										body = data2['body'], symbol = data2['symbol'],
+										degree = data2['degree'],
+										energy = data2['energy'],degree_type = data2['degree_type'])
+				return JsonResponse({"message":"created", "status": True})
+			else:
+				return JsonResponse({"message":"Not created", "status": False})
+		except ObjectDoesNotExist:
+			return JsonResponse({"message":"User Not matching","status":False})
+
+@csrf_exempt
+def bracket_c(request):
+	if request.method == 'POST':
+		data = json.loads(request.body)
+		try:
+			user = UserDetail.objects.get(id=int(data['id']))
+			if user:
+				for data2 in data['data']:
+					response = C.objects.create(
+										name = user,body1 = data2['body1'],
+										body = data2['body'], symbol = data2['symbol'],
+										degree = data2['degree'],
+										degree_type = data2['degree_type'])
+				return JsonResponse({"message":"created", "status": True})
+			else:
+				return JsonResponse({"message":"Not created", "status": False})
+		except ObjectDoesNotExist:
+			return JsonResponse({"message":"User Not matching","status":False})
+
+	if request.method == 'GET':
+		task_obj = C.objects.all()
+		data = list(task_obj.values())
+		return JsonResponse(data, safe=False)
+	
+	if request.method == 'PUT':
+		data1 = json.loads(request.body)
+		try:
+			user = C.objects.get(id=int(data1['id']))
+			if user:
+				for data2 in data1['data']:
+					response = C.objects.create(
+										body1 = data2['body1'],
+										body = data2['body'], symbol = data2['symbol'],
+										degree = data2['degree'],
+										degree_type = data2['degree_type'])
+				return JsonResponse({"message":"created", "status": True})
+			else:
+				return JsonResponse({"message":"Not created", "status": False})
+		except ObjectDoesNotExist:
+			return JsonResponse({"message":"User Not matching","status":False})
+
+@csrf_exempt
+def opposition(request):
+	if request.method == 'POST':
+		data = json.loads(request.body)
+		try:
+			user = UserDetail.objects.get(id=int(data['id']))
+			if user:
+				for data2 in data['data']:
+					response = Opposition.objects.create(
+										name = user,body1 = data2['body1'],
+										body2 = data2['body2'], symbol = data2['symbol'],
+										degree = data2['degree'],
+										degree_type = data2['degree_type'])
+				return JsonResponse({"message":"created", "status": True})
+			else:
+				return JsonResponse({"message":"Not created", "status": False})
+		except ObjectDoesNotExist:
+			return JsonResponse({"message":"User Not matching","status":False})
+
+	if request.method == 'GET':
+		task_obj = Opposition.objects.all()
+		data = list(task_obj.values())
+		return JsonResponse(data, safe=False)
+	
+	if request.method == 'PUT':
+		data1 = json.loads(request.body)
+		try:
+			user = Opposition.objects.get(id=int(data1['id']))
+			if user:
+				for data2 in data1['data']:
+					response = Opposition.objects.create(
+										body1 = data2['body1'],
+										body2 = data2['body2'], symbol = data2['symbol'],
+										degree = data2['degree'],
+										degree_type = data2['degree_type'])
+				return JsonResponse({"message":"created", "status": True})
+			else:
+				return JsonResponse({"message":"Not created", "status": False})
+		except ObjectDoesNotExist:
+			return JsonResponse({"message":"User Not matching","status":False})
+
+
+@csrf_exempt
+def sextile(request):
+	if request.method == 'POST':
+		data = json.loads(request.body)
+		try:
+			user = UserDetail.objects.get(id=int(data['id']))
+			if user:
+				for data2 in data['data']:
+					response = Sextile.objects.create(
+										name = user,body1 = data2['body1'],
+										body = data2['body'], symbol = data2['symbol'],
+										degree = data2['degree'],
+										degree_type = data2['degree_type'])
+				return JsonResponse({"message":"created", "status": True})
+			else:
+				return JsonResponse({"message":"Not created", "status": False})
+		except ObjectDoesNotExist:
+			return JsonResponse({"message":"User Not matching","status":False})
+
+	if request.method == 'GET':
+		task_obj = Sextile.objects.all()
+		data = list(task_obj.values())
+		return JsonResponse(data, safe=False)
+	
+	if request.method == 'PUT':
+		data1 = json.loads(request.body)
+		try:
+			user = Sextile.objects.get(id=int(data1['id']))
+			if user:
+				for data2 in data1['data']:
+					response = Sextile.objects.create(
+										body1 = data2['body1'],
+										body = data2['body'], symbol = data2['symbol'],
+										degree = data2['degree'],
+										degree_type = data2['degree_type'])
+				return JsonResponse({"message":"created", "status": True})
+			else:
+				return JsonResponse({"message":"Not created", "status": False})
+		except ObjectDoesNotExist:
+			return JsonResponse({"message":"User Not matching","status":False})
+
+@csrf_exempt
+def trine(request):
+	if request.method == 'POST':
+		data = json.loads(request.body)
+		try:
+			user = UserDetail.objects.get(id=int(data['id']))
+			if user:
+				for data2 in data['data']:
+					response = Trine.objects.create(
+										name = user,body1 = data2['body1'],
+										body = data2['body'], symbol = data2['symbol'],
+										degree = data2['degree'],
+										degree_type = data2['degree_type'])
+				return JsonResponse({"message":"created", "status": True})
+			else:
+				return JsonResponse({"message":"Not created", "status": False})
+		except ObjectDoesNotExist:
+			return JsonResponse({"message":"User Not matching","status":False})
+
+	if request.method == 'GET':
+		task_obj = Trine.objects.all()
+		data = list(task_obj.values())
+		return JsonResponse(data, safe=False)
+	
+	if request.method == 'PUT':
+		data1 = json.loads(request.body)
+		try:
+			user = Trine.objects.get(id=int(data1['id']))
+			if user:
+				for data2 in data1['data']:
+					response = Trine.objects.create(
+										body1 = data2['body1'],
+										body = data2['body'], symbol = data2['symbol'],
+										degree = data2['degree'],
+										degree_type = data2['degree_type'])
+				return JsonResponse({"message":"created", "status": True})
+			else:
+				return JsonResponse({"message":"Not created", "status": False})
+		except ObjectDoesNotExist:
+			return JsonResponse({"message":"User Not matching","status":False})
+
+@csrf_exempt
+def bracketedC(request):
+	if request.method == 'POST':
+		data = json.loads(request.body)
+		try:
+			user = UserDetail.objects.get(id=int(data['id']))
+			if user:
+				for data2 in data['data']:
+					response = BracketedC.objects.create(
+										name = user,body1 = data2['body1'],
+										body = data2['body'], symbol = data2['symbol'],
+										degree = data2['degree'],
+										degree_type = data2['degree_type'])
+				return JsonResponse({"message":"created", "status": True})
+			else:
+				return JsonResponse({"message":"Not created", "status": False})
+		except ObjectDoesNotExist:
+			return JsonResponse({"message":"User Not matching","status":False})
+
+	if request.method == 'GET':
+		task_obj = BracketedC.objects.all()
+		data = list(task_obj.values())
+		return JsonResponse(data, safe=False)
+	
+	if request.method == 'PUT':
+		data1 = json.loads(request.body)
+		try:
+			user = BracketedC.objects.get(id=int(data1['id']))
+			if user:
+				for data2 in data1['data']:
+					response = BracketedC.objects.create(
+										body1 = data2['body1'],
+										body = data2['body'], symbol = data2['symbol'],
+										degree = data2['degree'],
+										degree_type = data2['degree_type'])
+				return JsonResponse({"message":"created", "status": True})
+			else:
+				return JsonResponse({"message":"Not created", "status": False})
+		except ObjectDoesNotExist:
+			return JsonResponse({"message":"User Not matching","status":False})
+
+@csrf_exempt
+def multiple_square(request):
+	if request.method == 'POST':
+		data = json.loads(request.body)
+		print(data)
+		try:
+			user = UserDetail.objects.get(id=int(data['id']))
+			if user:
+				for data2 in data['data']:
+					response = MultipleSquare.objects.create(
+										name = user,body1 = data2['body1'],
+										body = data2['body'], symbol = data2['symbol'],
+										degree = data2['degree'],
+										degree_type = data2['degree_type'])
+				return JsonResponse({"message":"created", "status": True})
+			else:
+				return JsonResponse({"message":"Not created", "status": False})
+		except ObjectDoesNotExist:
+			return JsonResponse({"message":"User Not matching","status":False})
+
+	if request.method == 'GET':
+		task_obj = MultipleSquare.objects.all()
+		data = list(task_obj.values())
+		return JsonResponse(data, safe=False)
+	
+	if request.method == 'PUT':
+		data1 = json.loads(request.body)
+		try:
+			user = MultipleSquare.objects.get(id=int(data1['id']))
+			if user:
+				for data2 in data1['data']:
+					response = MultipleSquare.objects.create(
+										body1 = data2['body1'],
+										body = data2['body'], symbol = data2['symbol'],
+										degree = data2['degree'],
+										degree_type = data2['degree_type'])
+				return JsonResponse({"message":"created", "status": True})
+			else:
+				return JsonResponse({"message":"Not created", "status": False})
+		except ObjectDoesNotExist:
+			return JsonResponse({"message":"User Not matching","status":False})
+
+@csrf_exempt
+def moons(request):
+	if request.method == 'POST':
+		data = json.loads(request.body)
+		try:
+			user = UserDetail.objects.get(id=int(data['id']))
+			if user:
+				for data2 in data['data']:
+					response = Moon.objects.create(
+										name = user,
+										body = data2['body'], sym = data2['symbol'],
+										degree = data2['degree'],
+										degree_type = data2['degree_type'])
+				return JsonResponse({"message":"created", "status": True})
+			else:
+				return JsonResponse({"message":"Not created", "status": False})
+		except ObjectDoesNotExist:
+			return JsonResponse({"message":"User Not matching","status":False})
+
+	if request.method == 'GET':
+		task_obj = Moon.objects.all()
+		data = list(task_obj.values())
+		return JsonResponse(data, safe=False)
+	
+	if request.method == 'PUT':
+		data1 = json.loads(request.body)
+		try:
+			user = Moon.objects.get(id=int(data1['id']))
+			if user:
+				for data2 in data1['data']:
+					response = Moon.objects.create(
+										body = data2['body'], sym = data2['symbol'],
+										degree = data2['degree'],
+										degree_type = data2['degree_type'])
+				return JsonResponse({"message":"created", "status": True})
+			else:
+				return JsonResponse({"message":"Not created", "status": False})
+		except ObjectDoesNotExist:
+			return JsonResponse({"message":"User Not matching","status":False})
